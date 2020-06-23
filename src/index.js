@@ -1,72 +1,11 @@
-import React, { useState, useReducer } from "react"
+import React from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, Switch, Route } from "react-router-dom"
-import Axios from "axios"
+import Main from "./Main"
+import "./index.css"
 
-// My Components
-import Header from "./Header"
-import HomeGuest from "./HomeGuest"
-import Home from "./Home"
-import Footer from "./Footer"
-import About from "./About"
-import Terms from "./Terms"
-import CreatePost from "./CreatePost"
-import ViewSinglePost from "./ViewSinglePost"
-import FlashMessages from "./FlashMessages"
-import ExampleContext from "./ExampleContext"
-
-Axios.defaults.baseURL = "http://localhost:8080"
-
-function Main() {
-  const initialState = {}
-
-  function ourReducer(state, action) {}
-
-  const [state, dispatch] = useReducer(ourReducer, initialState)
-
-  dispatch({ type: "login" })
-  dispatch({ type: "logout" })
-  dispatch({ type: "flashMessage", value: "Congrats, you created a post." })
-
-  function Main() {
-    const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("complexappToken")))
-    const [flashMessages, setFlashMessages] = useState([])
-
-    function addFlashMessage(msg) {
-      setFlashMessages(prev => prev.concat(msg))
-    }
-
-    return (
-      <ExampleContext.Provider value={{ addFlashMessage, setLoggedIn }}>
-        <BrowserRouter>
-          <FlashMessages messages={flashMessages} />
-          <Header loggedIn={loggedIn} />
-          <Switch>
-            <Route path="/" exact>
-              {loggedIn ? <Home /> : <HomeGuest />}
-            </Route>
-            <Route path="/post/:id">
-              <ViewSinglePost />
-            </Route>
-            <Route path="/create-post">
-              <CreatePost />
-            </Route>
-            <Route path="/about-us">
-              <About />
-            </Route>
-            <Route path="/terms">
-              <Terms />
-            </Route>
-          </Switch>
-          <Footer />
-        </BrowserRouter>
-      </ExampleContext.Provider>
-    )
-  }
-
-  ReactDOM.render(<Main />, document.getElementById("root"))
-
-  if (module.hot) {
-    module.hot.accept()
-  }
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <Main />
+  </React.StrictMode>,
+  document.getElementById("root")
+)
