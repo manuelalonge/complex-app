@@ -17,6 +17,14 @@ import ExampleContext from "./ExampleContext"
 Axios.defaults.baseURL = "http://localhost:8080"
 
 function Main() {
+  const initialState = {}
+
+  function ourReducer(state, action) {}
+
+  const [state, dispatch] = useReducer(ourReducer, initialState)
+  dispatch({ type: "login" })
+  dispatch({ type: "logout" })
+  dispatch({ type: "flashMessa" })
   const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("complexappToken")))
   const [flashMessages, setFlashMessages] = useState([])
 
