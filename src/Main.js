@@ -73,7 +73,7 @@ function Main() {
           <FlashMessages messages={state.flashMessages} />
           <Header />
           <Switch>
-            <Route path="/profile/:usename">
+            <Route path="/profile/:username">
               <Profile />
             </Route>
             <Route path="/" exact>
