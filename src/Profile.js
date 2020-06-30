@@ -16,16 +16,20 @@ function Profile() {
   })
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+
     async function fetchData() {
       try {
-        const response = await Axios.post(`/profile/${username}`, { token: appState.user.token })
-        console.log(response.data)
+        const response = await Axios.post(`/profile/${username}`, { token: appState.user.token }, { cancelToken: ourRequest.token })
         setProfileData(response.data)
       } catch (e) {
         console.log("There was a problem.")
       }
     }
     fetchData()
+    return () => {
+      ourRequest.cancel()
+    }
   }, [])
 
   return (
@@ -36,6 +40,7 @@ function Profile() {
           Follow <i className="fas fa-user-plus"></i>
         </button>
       </h2>
+
       <div className="profile-nav nav nav-tabs pt-2 mb-4">
         <a href="#" className="active nav-item nav-link">
           Posts: {profileData.counts.postCount}
@@ -47,6 +52,7 @@ function Profile() {
           Following: {profileData.counts.followingCount}
         </a>
       </div>
+
       <ProfilePosts />
     </Page>
   )

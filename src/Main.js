@@ -1,6 +1,8 @@
-import React, { useState, useReducer } from "react"
+import React, { useState, useReducer, useEffect } from "react"
+import ReactDOM from "react-dom"
 import { useImmerReducer } from "use-immer"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 
 // My Components
@@ -16,7 +18,9 @@ import FlashMessages from "./FlashMessages"
 import Profile from "./Profile"
 import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
-import { useEffect } from "react"
+import EditPost from "./EditPost"
+import NotFound from "./NotFound"
+import Search from "./Search"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -28,7 +32,8 @@ function Main() {
       token: localStorage.getItem("complexappToken"),
       username: localStorage.getItem("complexappUsername"),
       avatar: localStorage.getItem("complexappAvatar")
-    }
+    },
+    isSearchOpen: false
   }
 
   function ourReducer(draft, action) {
@@ -36,17 +41,24 @@ function Main() {
       case "login":
         draft.loggedIn = true
         draft.user = action.data
-        return undefined
+        return
       case "logout":
         draft.loggedIn = false
-        return undefined
+        return
       case "flashMessage":
         draft.flashMessages.push(action.value)
-        return undefined
+        return
+      case "openSearch":
+        draft.isSearchOpen = true
+        return
+      case "closeSearch":
+        draft.isSearchOpen = false
+        return
     }
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
+
   useEffect(() => {
     if (state.loggedIn) {
       localStorage.setItem("complexappToken", state.user.token)
@@ -58,13 +70,6 @@ function Main() {
       localStorage.removeItem("complexappAvatar")
     }
   }, [state.loggedIn])
-
-  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("complexappToken")))
-  const [flashMessages, setFlashMessages] = useState([])
-
-  function addFlashMessage(msg) {
-    setFlashMessages(prev => prev.concat(msg))
-  }
 
   return (
     <StateContext.Provider value={state}>
@@ -79,8 +84,11 @@ function Main() {
             <Route path="/" exact>
               {state.loggedIn ? <Home /> : <HomeGuest />}
             </Route>
-            <Route path="/post/:id">
+            <Route path="/post/:id" exact>
               <ViewSinglePost />
+            </Route>
+            <Route path="/post/:id/edit" exact>
+              <EditPost />
             </Route>
             <Route path="/create-post">
               <CreatePost />
@@ -91,7 +99,13 @@ function Main() {
             <Route path="/terms">
               <Terms />
             </Route>
+            <Route>
+              <NotFound />
+            </Route>
           </Switch>
+          <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
+            <Search />
+          </CSSTransition>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
