@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from "react"
+import React, { useState, useReducer, useEffect, Suspense } from "react"
 import ReactDOM from "react-dom"
 import { useImmerReducer } from "use-immer"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
@@ -6,23 +6,25 @@ import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 
 // My Components
+import LoadingDotsIcon from "./LoadingDotsIcon"
 import Header from "./Header"
 import HomeGuest from "./HomeGuest"
 import Home from "./Home"
 import Footer from "./Footer"
 import About from "./About"
 import Terms from "./Terms"
-import CreatePost from "./CreatePost"
-import ViewSinglePost from "./ViewSinglePost"
 import FlashMessages from "./FlashMessages"
 import Profile from "./Profile"
 import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
 import EditPost from "./EditPost"
 import NotFound from "./NotFound"
-import Search from "./Search"
 
-Axios.defaults.baseURL = "http://localhost:8080"
+Axios.defaults.baseURL = process.env.BACKENDURL || ""
+const CreatePost = React.lazy(() => import("./CreatePost"))
+const ViewSinglePost = React.lazy(() => import("./ViewSinglePost"))
+const Search = React.lazy(() => import("./Search"))
+const Chat = React.lazy(() => import("./Chat"))
 
 function Main() {
   const initialState = {
@@ -33,7 +35,8 @@ function Main() {
       username: localStorage.getItem("complexappUsername"),
       avatar: localStorage.getItem("complexappAvatar")
     },
-    isSearchOpen: false
+    isSearchOpen: false,
+    isChatOpen: false
   }
 
   function ourReducer(draft, action) {
@@ -54,6 +57,12 @@ function Main() {
       case "closeSearch":
         draft.isSearchOpen = false
         return
+      case "toggleChat":
+        draft.isChatOpen = !draft.isChatOpen
+        return
+      case "closeChat":
+        draft.isChatOpen = false
+        return
     }
   }
 
@@ -71,41 +80,69 @@ function Main() {
     }
   }, [state.loggedIn])
 
+  // Check if token has expired or not on first render
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/checkToken", { token: state.user.token }, { cancelToken: ourRequest.token })
+          if (!response.data) {
+            dispatch({ type: "logout" })
+            dispatch({ type: "flashMessage", value: "Your session has expired. Please login again." })
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled.")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [])
+
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
           <FlashMessages messages={state.flashMessages} />
           <Header />
-          <Switch>
-            <Route path="/profile/:username">
-              <Profile />
-            </Route>
-            <Route path="/" exact>
-              {state.loggedIn ? <Home /> : <HomeGuest />}
-            </Route>
-            <Route path="/post/:id" exact>
-              <ViewSinglePost />
-            </Route>
-            <Route path="/post/:id/edit" exact>
-              <EditPost />
-            </Route>
-            <Route path="/create-post">
-              <CreatePost />
-            </Route>
-            <Route path="/about-us">
-              <About />
-            </Route>
-            <Route path="/terms">
-              <Terms />
-            </Route>
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
+          <Suspense fallback={<LoadingDotsIcon />}>
+            <Switch>
+              <Route path="/profile/:username">
+                <Profile />
+              </Route>
+              <Route path="/" exact>
+                {state.loggedIn ? <Home /> : <HomeGuest />}
+              </Route>
+              <Route path="/post/:id" exact>
+                <ViewSinglePost />
+              </Route>
+              <Route path="/post/:id/edit" exact>
+                <EditPost />
+              </Route>
+              <Route path="/create-post">
+                <CreatePost />
+              </Route>
+              <Route path="/about-us">
+                <About />
+              </Route>
+              <Route path="/terms">
+                <Terms />
+              </Route>
+              <Route>
+                <NotFound />
+              </Route>
+            </Switch>
+          </Suspense>
           <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
-            <Search />
+            <div className="search-overlay">
+              <Suspense fallback="">
+                <Search />
+              </Suspense>
+            </div>
           </CSSTransition>
+          <Suspense fallback="">{state.loggedIn && <Chat />}</Suspense>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
