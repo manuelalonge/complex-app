@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect, Suspense } from "react"
-import ReactDOM from "react-dom"
+// import ReactDOM from "react-dom"
 import { useImmerReducer } from "use-immer"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
@@ -21,6 +21,7 @@ import EditPost from "./EditPost"
 import NotFound from "./NotFound"
 
 Axios.defaults.baseURL = process.env.BACKENDURL || ""
+// Axios.defaults.baseURL = "http://localhost:8080"
 const CreatePost = React.lazy(() => import("./CreatePost"))
 const ViewSinglePost = React.lazy(() => import("./ViewSinglePost"))
 const Search = React.lazy(() => import("./Search"))
