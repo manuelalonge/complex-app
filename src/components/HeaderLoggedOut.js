@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
-import DispatchContext from "./DispatchContext"
-import axiosInstance from "./AxiosInstance"
+import DispatchContext from "../DispatchContext"
 
 function HeaderLoggedOut(props) {
   const appDispatch = useContext(DispatchContext)
@@ -11,7 +10,7 @@ function HeaderLoggedOut(props) {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post(axiosInstance, { username, password })
+      const response = await Axios.post("login", { username, password })
       if (response.data) {
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "You have successfully logged in." })

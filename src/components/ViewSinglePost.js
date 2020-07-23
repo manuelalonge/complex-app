@@ -6,8 +6,8 @@ import LoadingDotsIcon from "./LoadingDotsIcon"
 import ReactMarkdown from "react-markdown"
 import ReactTooltip from "react-tooltip"
 import NotFound from "./NotFound"
-import StateContext from "./StateContext"
-import DispatchContext from "./DispatchContext"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function ViewSinglePost(props) {
   const appState = useContext(StateContext)

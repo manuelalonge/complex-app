@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
 import { useParams, Link } from "react-router-dom"
 import LoadingDotsIcon from "./LoadingDotsIcon"
-import StateContext from "./StateContext"
+import StateContext from "../StateContext"
 
-function ProfileFollowing(props) {
+function ProfileFollowers(props) {
   const appState = useContext(StateContext)
   const { username } = useParams()
   const [isLoading, setIsLoading] = useState(true)
@@ -15,7 +15,7 @@ function ProfileFollowing(props) {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/following`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/profile/${username}/followers`, { cancelToken: ourRequest.token })
         setPosts(response.data)
         setIsLoading(false)
       } catch (e) {
@@ -40,10 +40,21 @@ function ProfileFollowing(props) {
             </Link>
           )
         })}
-      {posts.length == 0 && appState.user.username == username && <p className="lead text-muted text-center">You aren&rsquo;t following anyone yet.</p>}
-      {posts.length == 0 && appState.user.username != username && <p className="lead text-muted text-center">{username} isn&rsquo;t following anyone yet.</p>}
+      {posts.length == 0 && appState.user.username == username && <p className="lead text-muted text-center">You don&rsquo;t have any followers yet.</p>}
+      {posts.length == 0 && appState.user.username != username && (
+        <p className="lead text-muted text-center">
+          {username} doesn&rsquo;t have any followers yet.
+          {appState.loggedIn && " Be the first to follow them!"}
+          {!appState.loggedIn && (
+            <>
+              {" "}
+              If you want to follow them you need to <Link to="/">sign up</Link> for an account first.{" "}
+            </>
+          )}
+        </p>
+      )}
     </div>
   )
 }
 
-export default ProfileFollowing
+export default ProfileFollowers

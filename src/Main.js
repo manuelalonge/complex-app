@@ -3,25 +3,27 @@ import ReactDOM from "react-dom"
 import { useImmerReducer } from "use-immer"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
-import Axios from "axios"
 
 // My Components
-import Header from "./Header"
-import HomeGuest from "./HomeGuest"
-import Home from "./Home"
-import Footer from "./Footer"
-import About from "./About"
-import Terms from "./Terms"
-import FlashMessages from "./FlashMessages"
-import Profile from "./Profile"
+import Header from "./components/Header"
+import HomeGuest from "./components/HomeGuest"
+import Home from "./components/Home"
+import Footer from "./components/Footer"
+import About from "./components/About"
+import Terms from "./components/Terms"
+import FlashMessages from "./components/FlashMessages"
+import Profile from "./components/Profile"
 import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
-import EditPost from "./EditPost"
-import NotFound from "./NotFound"
-import ViewSinglePost from "./ViewSinglePost"
-import CreatePost from "./CreatePost"
-import Chat from "./Chat"
-import Search from "./Search"
+import EditPost from "./components/EditPost"
+import NotFound from "./components/NotFound"
+import ViewSinglePost from "./components/ViewSinglePost"
+import CreatePost from "./components/CreatePost"
+import Chat from "./components/Chat"
+import Search from "./components/Search"
+
+import Axios from "axios"
+Axios.defaults.baseURL = "http://localhost:8080"
 
 function Main() {
   const initialState = {
@@ -148,9 +150,5 @@ function Main() {
 }
 
 ReactDOM.render(<Main />, document.querySelector("#root"))
-
-if (module.hot) {
-  module.hot.accept()
-}
 
 export default Main

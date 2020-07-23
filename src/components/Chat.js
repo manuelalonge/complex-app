@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useRef } from "react"
-import StateContext from "./StateContext"
-import DispatchContext from "./DispatchContext"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 import { useImmer } from "use-immer"
 import { Link } from "react-router-dom"
 import io from "socket.io-client"

@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from "react"
 import Page from "./Page"
 import Axios from "axios"
 import { withRouter } from "react-router-dom"
-import DispatchContext from "./DispatchContext"
-import StateContext from "./StateContext"
+import DispatchContext from "../DispatchContext"
+import StateContext from "../StateContext"
 
 function CreatePost(props) {
   const [title, setTitle] = useState()

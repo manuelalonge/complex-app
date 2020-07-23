@@ -4,8 +4,8 @@ import Page from "./Page"
 import { useParams, Link, withRouter } from "react-router-dom"
 import Axios from "axios"
 import LoadingDotsIcon from "./LoadingDotsIcon"
-import StateContext from "./StateContext"
-import DispatchContext from "./DispatchContext"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 import NotFound from "./NotFound"
 
 function EditPost(props) {
