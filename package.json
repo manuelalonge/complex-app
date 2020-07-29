@@ -33,7 +33,7 @@
     "webpackBuild": "webpack",
     "generate": "babel-node --presets=@babel/preset-react,@babel/preset-env generateHtml.js",
     "previewDist": "node previewDist",
-    "build": "react-scripts build",
+    "build": "CI= react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
