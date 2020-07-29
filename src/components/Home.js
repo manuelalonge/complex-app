@@ -4,6 +4,7 @@ import StateContext from "../StateContext"
 import { useImmer } from "use-immer"
 import LoadingDotsIcon from "./LoadingDotsIcon"
 import Axios from "axios"
+import { Link } from "react-router-dom"
 import Post from "./Post"
 
 function Home() {

@@ -23,7 +23,9 @@ import Chat from "./components/Chat"
 import Search from "./components/Search"
 
 import Axios from "axios"
-Axios.defaults.baseURL = "http://localhost:8080"
+Axios.defaults.baseURL = "https://backendmanuelalonge.herokuapp.com"
+
+// Axios.defaults.baseURL = process.env.BACKENDURL || ""
 
 function Main() {
   const initialState = {

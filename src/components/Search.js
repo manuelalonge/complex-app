@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react"
 import DispatchContext from "../DispatchContext"
 import { useImmer } from "use-immer"
 import Axios from "axios"
+import { Link } from "react-router-dom"
 import Post from "./Post"
 
 function Search() {
@@ -11,7 +12,7 @@ function Search() {
     searchTerm: "",
     results: [],
     show: "neither",
-    requestCount: 0
+    requestCount: 0,
   })
 
   useEffect(() => {
@@ -21,18 +22,18 @@ function Search() {
 
   useEffect(() => {
     if (state.searchTerm.trim()) {
-      setState(draft => {
+      setState((draft) => {
         draft.show = "loading"
       })
       const delay = setTimeout(() => {
-        setState(draft => {
+        setState((draft) => {
           draft.requestCount++
         })
       }, 750)
 
       return () => clearTimeout(delay)
     } else {
-      setState(draft => {
+      setState((draft) => {
         draft.show = "neither"
       })
     }
@@ -44,7 +45,7 @@ function Search() {
       async function fetchResults() {
         try {
           const response = await Axios.post("/search", { searchTerm: state.searchTerm }, { cancelToken: ourRequest.token })
-          setState(draft => {
+          setState((draft) => {
             draft.results = response.data
             draft.show = "results"
           })
@@ -65,13 +66,13 @@ function Search() {
 
   function handleInput(e) {
     const value = e.target.value
-    setState(draft => {
+    setState((draft) => {
       draft.searchTerm = value
     })
   }
 
   return (
-    <div className="search-overlay">
+    <>
       <div className="search-overlay-top shadow-sm">
         <div className="container container--narrow">
           <label htmlFor="live-search-field" className="search-overlay-icon">
@@ -93,7 +94,7 @@ function Search() {
                 <div className="list-group-item active">
                   <strong>Search Results</strong> ({state.results.length} {state.results.length > 1 ? "items" : "item"} found)
                 </div>
-                {state.results.map(post => {
+                {state.results.map((post) => {
                   return <Post post={post} key={post._id} onClick={() => appDispatch({ type: "closeSearch" })} />
                 })}
               </div>
@@ -102,7 +103,7 @@ function Search() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
